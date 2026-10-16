@@ -679,7 +679,24 @@ bool processRssiSnr()
 // Shared by the physical encoder, BLE HID, and ad hoc R/r commands.
 bool handleRotation(int16_t enc, int16_t accelerated, bool pressed)
 {
-  if(!enc || (sleepOn() && sleepModeIdx == SLEEP_LOCKED)) return false;
+  if(!enc)
+    return false;
+  if(sleepOn() && sleepModeIdx == SLEEP_LOCKED)
+  {
+    if (pressed)
+      return false;
+    if(currentCmd == CMD_NONE)
+    {
+      // The dial controls the volume in the sleep locked mode
+      currentCmd = CMD_VOLUME;
+      doVolume(enc);
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
   bool changed = false;
   if(pressed)
   {
