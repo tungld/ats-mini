@@ -681,13 +681,14 @@ bool handleRotation(int16_t enc, int16_t accelerated, bool pressed)
 {
   if(!enc)
     return false;
-  if(sleepOn() && sleepModeIdx == SLEEP_LOCKED)
+  if(sleepOn() && (sleepModeIdx == SLEEP_LOCKED || sleepModeIdx == SLEEP_LIGHT)
   {
     if (pressed)
       return false;
     // The dial controls the volume in the sleep locked mode
     currentCmd = CMD_VOLUME;
     doVolume(enc);
+    currentCmd = CMD_NONE;
     return true;
   }
   bool changed = false;
@@ -777,7 +778,7 @@ void loop()
   int16_t encCountAccel = (int16_t)(encCounts >> 16);
   ButtonTracker::State button = pb1.update(digitalRead(ENCODER_PUSH_BUTTON) == LOW);
 
-  if(encCount && sleepOn() && sleepModeIdx == SLEEP_LOCKED)
+  if(encCount && sleepOn() && (sleepModeIdx == SLEEP_LOCKED || sleepModeIdx == SLEEP_LIGHT)
   {
     handleRotation(encCount, encCountAccel, button.isPressed);
     encCount = encCountAccel = 0;
