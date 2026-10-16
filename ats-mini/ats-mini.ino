@@ -681,7 +681,7 @@ bool handleRotation(int16_t enc, int16_t accelerated, bool pressed)
 {
   if(!enc)
     return false;
-  if(sleepOn() && (sleepModeIdx == SLEEP_LOCKED || sleepModeIdx == SLEEP_LIGHT)
+  if(sleepOn() && (sleepModeIdx == SLEEP_LOCKED || sleepModeIdx == SLEEP_LIGHT))
   {
     if (pressed)
       return false;
@@ -778,7 +778,7 @@ void loop()
   int16_t encCountAccel = (int16_t)(encCounts >> 16);
   ButtonTracker::State button = pb1.update(digitalRead(ENCODER_PUSH_BUTTON) == LOW);
 
-  if(encCount && sleepOn() && (sleepModeIdx == SLEEP_LOCKED || sleepModeIdx == SLEEP_LIGHT)
+  if(encCount && sleepOn() && (sleepModeIdx == SLEEP_LOCKED || sleepModeIdx == SLEEP_LIGHT))
   {
     handleRotation(encCount, encCountAccel, button.isPressed);
     encCount = encCountAccel = 0;
