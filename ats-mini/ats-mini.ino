@@ -685,17 +685,10 @@ bool handleRotation(int16_t enc, int16_t accelerated, bool pressed)
   {
     if (pressed)
       return false;
-    if(currentCmd == CMD_NONE)
-    {
-      // The dial controls the volume in the sleep locked mode
-      currentCmd = CMD_VOLUME;
-      doVolume(enc);
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    // The dial controls the volume in the sleep locked mode
+    currentCmd = CMD_VOLUME;
+    doVolume(enc);
+    return true;
   }
   bool changed = false;
   if(pressed)
