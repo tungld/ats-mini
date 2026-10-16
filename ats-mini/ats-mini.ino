@@ -778,7 +778,10 @@ void loop()
   ButtonTracker::State button = pb1.update(digitalRead(ENCODER_PUSH_BUTTON) == LOW);
 
   if(encCount && sleepOn() && sleepModeIdx == SLEEP_LOCKED)
+  {
+    handleRotation(encCount, encCountAccel, button.isPressed);
     encCount = encCountAccel = 0;
+  }
   // Keep gesture ownership separate: releasing one control must not clear
   // a held gesture on the other, or affect physical long-press handling.
   static bool physicalPushAndRotate = false;
