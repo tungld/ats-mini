@@ -326,6 +326,8 @@ bool sleepOn(int x)
       pinMode(ENCODER_PUSH_BUTTON, INPUT_PULLUP);
       if(muteOn(MUTE_SQUELCH) && !muteOn(MUTE_MAIN)) muteOn(MUTE_FORCE, true);
       sleepOn(false);
+      // Allow changing volume control as soon as it wakes up
+      currentCmd = CMD_VOLUME;
       // Enable WiFi
       netInit(wifiModeIdx);
     }
