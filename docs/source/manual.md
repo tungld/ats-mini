@@ -73,7 +73,7 @@ The menu can be invoked by clicking the encoder button and is closed automatical
 * **UTC Offset** - Affects the displayed date and time. Please note that automatic DST transitions are not supported; the offset needs to be adjusted manually.
 * **Sleep Timer** - Automatic sleep interval in seconds (Off - disabled).
 * **Sleep Mode** - Locked - lock the encoder rotation during sleep; Unlocked - allow tuning the frequency in sleep mode; CPU Sleep - the maximum power saving mode. With the display being on, default brightness, and Wi-Fi the power consumption is about 170mA, without Wi-Fi 100mA, Locked/Unlocked modes draw about 70mA, CPU sleep mode draws about 40mA.
-* **Off Timer** - Shut down after 5–240 minutes, in 5-minute steps. Turn the encoder to start or restart the timer; short press to disable it (Off). The remaining time alternates with the date and time in the info panel. The timer works during sleep and restarts on each power-up. After shutdown, cycle the power switch to restart the receiver. This is not a true power-off state: the receiver still draws some current.
+* **Off Timer** - Short press the menu entry to shut down immediately into deep sleep, or click to adjust the timer (5–240 minutes, in 5-minute steps). While adjusting, turn the encoder to start or restart the timer; short press to disable it (Off). The remaining time alternates with the date and time in the info panel. The timer works during sleep and restarts on each power-up. After shutdown, cycle the power switch or press reset to restart the receiver. This is not a true power-off state: the receiver still draws some current.
 * **Theme** - Color theme.
 * **UI Layout** - Alternative UI layouts. For now there is just one alternative UI with large S-meter and S/N-meter.
 * **Zoom Menu** - Display the currently selected menu item using a larger font (accessibility option).
@@ -83,6 +83,7 @@ The menu can be invoked by clicking the encoder button and is closed automatical
 * **FM Region** - FM de-emphasis time constant by region (50µs for EU/JP/AU and 70µs for the US).
 * **Calibration** - SSB calibration offset (-2000...2000, per mode/band).
 * **DSP Patches** - Select **Default** or an uploaded AM/SSB patch set. Manage these experimental patches on the web interface's **Patches** page.
+* **Audio Clamp** - Select **Absent** to suppress audio clicks when muting/unmuting or changing bands or modes on receivers without an audio clamp circuit. Leave **Present** (default) selected on receivers with the circuit and on LILYGO T-Embed SI4732.
 * **Load EiBi** - download the EiBi [schedule](#schedule) (requires Wi-Fi internet connection).
 * **Update FW** - **Check** shows the available firmware version; **Update** installs it (requires a Wi-Fi internet connection). See [updating over Wi-Fi](flash.md#update-over-wi-fi).
 * **USB Port** - USB serial mode: Off (default) or Ad hoc. In Ad hoc mode, the receiver accepts the [remote control](remote.md) commands over the USB serial port.
