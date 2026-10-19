@@ -9,27 +9,31 @@ static const char pageConfig[] PROGMEM = R"HTML(<H1>{{title}}</H1>
 {{{navigation}}}
 <FORM ACTION="/setconfig" METHOD="POST" ENCTYPE="multipart/form-data" ONSUBMIT="browserDateTime(true)">
   <TABLE COLUMNS="2">
-    <TR><TH COLSPAN="2" CLASS="HEADING">WiFi Network 1</TH></TR>
-    <TR><TD CLASS="LABEL">SSID</TD><TD><INPUT TYPE="TEXT" NAME="wifissid1" VALUE="{{ssid1}}"></TD></TR>
-    <TR><TD CLASS="LABEL">Password</TD><TD><INPUT TYPE="PASSWORD" NAME="wifipass1" VALUE="{{pass1}}"></TD></TR>
-    <TR><TH COLSPAN="2" CLASS="HEADING">WiFi Network 2</TH></TR>
-    <TR><TD CLASS="LABEL">SSID</TD><TD><INPUT TYPE="TEXT" NAME="wifissid2" VALUE="{{ssid2}}"></TD></TR>
-    <TR><TD CLASS="LABEL">Password</TD><TD><INPUT TYPE="PASSWORD" NAME="wifipass2" VALUE="{{pass2}}"></TD></TR>
-    <TR><TH COLSPAN="2" CLASS="HEADING">WiFi Network 3</TH></TR>
-    <TR><TD CLASS="LABEL">SSID</TD><TD><INPUT TYPE="TEXT" NAME="wifissid3" VALUE="{{ssid3}}"></TD></TR>
-    <TR><TD CLASS="LABEL">Password</TD><TD><INPUT TYPE="PASSWORD" NAME="wifipass3" VALUE="{{pass3}}"></TD></TR>
-    <TR><TH COLSPAN="2" CLASS="HEADING">This Web UI Login Credentials</TH></TR>
-    <TR><TD CLASS="LABEL">Username</TD><TD><INPUT TYPE="TEXT" NAME="username" VALUE="{{username}}"></TD></TR>
-    <TR><TD CLASS="LABEL">Password</TD><TD><INPUT TYPE="PASSWORD" NAME="password" VALUE="{{password}}"></TD></TR>
-    <TR><TH COLSPAN="2" CLASS="HEADING">Settings</TH></TR>
-    <TR><TD CLASS="LABEL">Scan Hidden SSIDs</TD><TD><INPUT TYPE="CHECKBOX" NAME="wifiscanhidden" VALUE="on" {{scan_hidden}}></TD></TR>
+    <TR><TH COLSPAN="2" CLASS="HEADING">Date/Time</TH></TR>
     <TR><TD CLASS="LABEL">Use Browser Date/Time</TD><TD><INPUT TYPE="CHECKBOX" ID="browserdatetime" ONCHANGE="browserDateTime()"></TD></TR>
     <TR><TD CLASS="LABEL">UTC Date/Time</TD><TD><INPUT TYPE="TEXT" ID="datetime" NAME="datetime" PLACEHOLDER="YYYY-mm-dd HH:MM:SS"></TD></TR>
     <TR><TD CLASS="LABEL">Time Zone</TD><TD><SELECT ID="utcoffset" NAME="utcoffset">{{{utc_options}}}</SELECT></TD></TR>
+    <TR><TH COLSPAN="2" CLASS="HEADING">UI</TH></TR>
+    <TR><TD CLASS="LABEL">UI Layout</TD><TD><SELECT NAME="uilayout">{{{layout_options}}}</SELECT></TD></TR>
     <TR><TD CLASS="LABEL">Theme</TD><TD><SELECT NAME="theme">{{{theme_options}}}</SELECT></TD></TR>
     <TR><TD CLASS="LABEL">Reverse Scrolling</TD><TD><INPUT TYPE="CHECKBOX" NAME="scroll" VALUE="on" {{scroll}}></TD></TR>
-    <TR><TD CLASS="LABEL">Half-step Encoder</TD><TD><INPUT TYPE="CHECKBOX" NAME="encoderhalfstep" VALUE="on" {{half_step}}></TD></TR>
     <TR><TD CLASS="LABEL">Zoomed Menu</TD><TD><INPUT TYPE="CHECKBOX" NAME="zoom" VALUE="on" {{zoom}}></TD></TR>
+    <TR><TH COLSPAN="2" CLASS="HEADING">Radio</TH></TR>
+    <TR><TD CLASS="LABEL">RDS</TD><TD><SELECT NAME="rds">{{{rds_options}}}</SELECT></TD></TR>
+    <TR><TD CLASS="LABEL">FM Region</TD><TD><SELECT NAME="fmregion">{{{region_options}}}</SELECT></TD></TR>
+    <TR><TD CLASS="LABEL">FM Stereo</TD><TD><SELECT NAME="fmstereo">{{{stereo_options}}}</SELECT></TD></TR>
+    <TR><TH COLSPAN="2" CLASS="HEADING">Power</TH></TR>
+    <TR><TD CLASS="LABEL">Brightness</TD><TD><INPUT TYPE="NUMBER" NAME="brightness" MIN="10" MAX="255" STEP="5" VALUE="{{brightness}}" REQUIRED></TD></TR>
+    <TR><TD CLASS="LABEL">Sleep Timer</TD><TD><INPUT TYPE="NUMBER" NAME="sleeptimer" MIN="0" MAX="255" STEP="5" VALUE="{{sleep_timer}}" REQUIRED><BR><SMALL>Seconds; 0 disables sleep</SMALL></TD></TR>
+    <TR><TD CLASS="LABEL">Sleep Mode</TD><TD><SELECT NAME="sleepmode">{{{sleep_options}}}</SELECT></TD></TR>
+    <TR><TD CLASS="LABEL">Off Timer</TD><TD><INPUT TYPE="NUMBER" NAME="offtimer" MIN="0" MAX="240" STEP="5" VALUE="{{off_timer}}" REQUIRED><BR><SMALL>Minutes; 0 disables shutdown. Changing the duration restarts the timer.</SMALL></TD></TR>
+    <TR><TH COLSPAN="2" CLASS="HEADING">Connectivity</TH></TR>
+    <TR><TD CLASS="LABEL">USB Mode</TD><TD><SELECT NAME="usbmode">{{{usb_options}}}</SELECT></TD></TR>
+    <TR><TD CLASS="LABEL">TCP Mode</TD><TD><SELECT NAME="tcpmode">{{{tcp_options}}}</SELECT><BR><SMALL>Listens on port 60000; requires Wi-Fi</SMALL></TD></TR>
+    <TR><TD CLASS="LABEL">Bluetooth Mode</TD><TD><SELECT NAME="blemode">{{{ble_options}}}</SELECT></TD></TR>
+    <TR><TH COLSPAN="2" CLASS="HEADING">Hardware</TH></TR>
+    <TR><TD CLASS="LABEL">Audio Clamp</TD><TD><INPUT TYPE="CHECKBOX" NAME="audioclamp" VALUE="on" {{audio_clamp}}><BR><SMALL>Enable if the receiver has an audio clamp circuit</SMALL></TD></TR>
+    <TR><TD CLASS="LABEL">Half-step Encoder</TD><TD><INPUT TYPE="CHECKBOX" NAME="encoderhalfstep" VALUE="on" {{half_step}}></TD></TR>
     <TR><TH COLSPAN="2" CLASS="HEADING">Splash Screen</TH></TR>
     <TR><TD CLASS="LABEL">Current Image</TD><TD>{{{splash}}}</TD></TR>
     <TR>

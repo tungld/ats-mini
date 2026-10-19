@@ -186,6 +186,8 @@ const FMRegion fmRegions[] = {
   { 0x2, "US" },
 };
 
+int getTotalFMRegions() { return(ITEM_COUNT(fmRegions)); }
+
 //
 // Mode Menu
 //
@@ -199,7 +201,11 @@ int getTotalModes() { return(ITEM_COUNT(bandModeDesc)); }
 //
 
 uint8_t fmStereoIdx = FM_STEREO_AUTO;
-static const char *fmStereoDesc[] = { "Auto", "Mono" };
+const char *const fmStereoDesc[] = { "Auto", "Mono" };
+
+int getTotalFMStereoModes() { return(ITEM_COUNT(fmStereoDesc)); }
+
+bool audioClamp = true;
 
 uint8_t dspPatchesIdx = DSP_PATCHES_DEFAULT;
 
@@ -215,7 +221,7 @@ Memory newMemory;
 //
 
 uint8_t rdsModeIdx = 0;
-static const RDSMode rdsMode[] =
+const RDSMode rdsMode[] =
 {
   { RDS_PS, "PS"},
   { RDS_PS | RDS_CT, "PS+CT" },
@@ -229,14 +235,17 @@ static const RDSMode rdsMode[] =
 };
 
 uint8_t getRDSMode() { return(rdsMode[rdsModeIdx].mode); }
+int getTotalRDSModes() { return(ITEM_COUNT(rdsMode)); }
 
 //
 // Sleep Mode Menu
 //
 
 uint8_t sleepModeIdx = SLEEP_LOCKED;
-static const char *sleepModeDesc[] =
+const char *const sleepModeDesc[] =
 { "Locked", "Unlocked", "CPU Sleep" };
+
+int getTotalSleepModes() { return(ITEM_COUNT(sleepModeDesc)); }
 
 //
 // UTC Offset Menu
@@ -318,24 +327,30 @@ static uint8_t dateTimeSecond;
 // UI Layout Menu
 //
 uint8_t uiLayoutIdx = 0;
-static const char *uiLayoutDesc[] =
+const char *const uiLayoutDesc[] =
 { "Default", "S-Meter" };
+
+int getTotalUILayouts() { return(ITEM_COUNT(uiLayoutDesc)); }
 
 //
 // USB Port Mode Menu
 //
 
 uint8_t usbModeIdx = USB_OFF;
-static const char *usbModeDesc[] =
+const char *const usbModeDesc[] =
 { "Off", "Ad hoc" };
+
+int getTotalUSBModes() { return(ITEM_COUNT(usbModeDesc)); }
 
 //
 // TCP Port Mode Menu
 //
 
 uint8_t tcpModeIdx = TCP_OFF;
-static const char *tcpModeDesc[] =
+const char *const tcpModeDesc[] =
 { "Off", "Ad hoc" };
+
+int getTotalTCPModes() { return(ITEM_COUNT(tcpModeDesc)); }
 
 //
 // Bluetooth Mode Menu
@@ -343,16 +358,20 @@ static const char *tcpModeDesc[] =
 
 uint8_t bleModeIdx = BLE_OFF;
 static uint8_t bleModeMenuIdx = BLE_OFF;
-static const char *bleModeDesc[] =
+const char *const bleModeDesc[] =
 { "Off", "Ad hoc", "HID", "Unpair All" };
+
+int getTotalBluetoothModes() { return(ITEM_COUNT(bleModeDesc)); }
 
 //
 // WiFi Mode Menu
 //
 
 uint8_t wifiModeIdx = NET_OFF;
-static const char *wifiModeDesc[] =
+const char *const wifiModeDesc[] =
 { "Off", "AP Only", "AP+Connect", "Connect", "Sync Only" };
+
+int getTotalWiFiModes() { return(ITEM_COUNT(wifiModeDesc)); }
 
 //
 // Step Menu
@@ -883,7 +902,7 @@ static void clickWiFiMode(uint8_t mode, bool shortPress)
   netInit(mode);
 }
 
-static void doRDSMode(int16_t enc)
+void doRDSMode(int16_t enc)
 {
   rdsModeIdx = wrap_range(rdsModeIdx, enc, 0, LAST_ITEM(rdsMode));
   if(!(getRDSMode() & RDS_CT) && !ntpIsAvailable()) clockReset();
@@ -1222,7 +1241,10 @@ static void clickSettings(int cmd, bool shortPress)
       break;
     case MENU_ZOOM:       currentCmd = CMD_ZOOM;       break;
     case MENU_SCROLL:     currentCmd = CMD_SCROLL;     break;
-    case MENU_OFFTIMER:   currentCmd = CMD_OFFTIMER;   break;
+    case MENU_OFFTIMER:
+      if(shortPress) receiverShutdown();
+      else currentCmd = CMD_OFFTIMER;
+      break;
     case MENU_SLEEP:      currentCmd = CMD_SLEEP;      break;
     case MENU_SLEEPMODE:  currentCmd = CMD_SLEEPMODE;  break;
     case MENU_UTCOFFSET:  currentCmd = CMD_UTCOFFSET;  break;
@@ -1335,9 +1357,9 @@ bool clickHandler(uint16_t cmd, bool shortPress)
 
 void selectBand(uint8_t idx, bool drawLoadingPatch)
 {
-  // Silence click on some hardware versions
+  // Silence clicks during reconfiguration using the configured hardware mute method.
   // https://github.com/esp32-si4732/ats-mini/discussions/103
-  muteOn(MUTE_TEMP, true);
+  muteOn(MUTE_TEMP, true, !audioClamp);
 
   // Set band and mode
   bandIdx = min(idx, LAST_ITEM(bands));
@@ -1361,8 +1383,7 @@ void selectBand(uint8_t idx, bool drawLoadingPatch)
   // Set default digit position based on the current step
   resetFreqInputPos();
 
-  // Unmute the sound
-  muteOn(MUTE_TEMP, false);
+  muteOn(MUTE_TEMP, false, !audioClamp);
 }
 
 //
