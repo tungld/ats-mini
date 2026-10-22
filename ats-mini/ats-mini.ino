@@ -413,7 +413,7 @@ void useBand(Band *band)
     rx.setFMDeEmphasis(fmRegions[FmRegionIdx].value);
     applyFmStereo();
     rx.RdsInit();
-    rx.setRdsConfig(1, 2, 2, 2, 2);
+    rx.setRdsConfig(getRDSMode()!=RDS_OFF, 2, 2, 2, 2);
     rx.setGpioCtl(1, 0, 0);   // G8PTN: Enable GPIO1 as output
     rx.setGpio(0, 0, 0);      // G8PTN: Set GPIO1 = 0
   }
@@ -838,7 +838,7 @@ void loop()
   // Periodically check received RDS information
   if((currentTime - lastRDSCheck) > RDS_CHECK_TIME)
   {
-    needRedraw |= (currentMode == FM) && (snr >= 12) && checkRds();
+    needRedraw |= (currentMode == FM) && checkRds();
     lastRDSCheck = currentTime;
   }
 

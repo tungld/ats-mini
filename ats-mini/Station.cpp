@@ -75,7 +75,7 @@ const char *getStationName()
   if(switchThemeEditor())
     return("*STATION*");
 
-  const char *station = getRDSMode() & RDS_PS? bufStationName : "";
+  const char *station = currentMode!=FM || (getRDSMode() & RDS_PS)? bufStationName : "";
   // Live FM identification takes precedence over a saved name.
   if(currentMode==FM && station[strspn(station, " ")]) return(station);
 
@@ -132,7 +132,7 @@ static bool showStationName(const char *stationName, bool isLong = false)
 static bool showRadioText(const char *radioText, uint8_t width = 32)
 {
   bool changed = false;
-  int i, j;
+  int i, j, out = 0;
   char c;
 
   // Must have text
@@ -155,19 +155,19 @@ static bool showRadioText(const char *radioText, uint8_t width = 32)
       j++;
     }
 
-    changed |= c!=bufRadioText[i];
-    bufRadioText[i] = c;
+    changed |= c!=bufRadioText[out];
+    bufRadioText[out++] = c;
   }
 
   // Skip trailing whitespace
-  while((i>0) && (bufRadioText[i-1]<=' ')) i--;
+  while((out>0) && (bufRadioText[out-1]<=' ')) out--;
 
   // Check the end of the buffer for changes
-  changed |= bufRadioText[i] || bufRadioText[i+1];
+  changed |= bufRadioText[out] || bufRadioText[out+1];
 
   // Terminate multitline text with two zeros
-  bufRadioText[i++] = '\0';
-  bufRadioText[i++] = '\0';
+  bufRadioText[out++] = '\0';
+  bufRadioText[out] = '\0';
 
   // Done
   return(changed);
@@ -218,20 +218,28 @@ static bool showRdsTime()
 
 bool checkRds()
 {
+  static constexpr uint8_t RDS_MAX_GROUPS_PER_CHECK = 25;
   bool needRedraw = false;
   uint8_t mode = getRDSMode();
 
   if(mode==RDS_OFF) return(false);
 
-  rx.getRdsStatus();
-
-  if(rx.getRdsReceived() && rx.getRdsSync() && rx.getRdsSyncFound())
+  // Drain at most one FIFO capacity per loop iteration so the UI can run.
+  for(uint8_t i=0 ; i<RDS_MAX_GROUPS_PER_CHECK ; i++)
   {
+    rx.getRdsStatus();
+    uint8_t count = rx.getNumRdsFifoUsed();
+    // Empty responses may retain event flags and stale A/B blocks.
+    if(!count) break;
+
     needRedraw |= (mode & RDS_PS) && showStationName(rx.getRdsStationName());
     needRedraw |= (mode & RDS_RT) && showRadioText(rx.getRdsVersionCode()? rx.getRdsText2B() : rx.getRdsText2A());
     needRedraw |= (mode & RDS_PI) && showRdsPiCode(rx.getRdsPI());
     needRedraw |= (mode & RDS_CT) && showRdsTime();
     needRedraw |= (mode & RDS_PT) && showRdsProgramType(rx.getRdsProgramTypeX(), !!(mode & RDS_RBDS));
+
+    // The reported count includes the group returned by this read (AN332).
+    if(count==1) break;
   }
 
   // Return TRUE if any RDS information changes
